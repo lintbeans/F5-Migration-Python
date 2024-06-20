@@ -5,8 +5,8 @@
 </div>
 
 # :star2: About the Project
-- <p>This project is designed to automate the process of moving Self-IPs between disparate F5s, including the upstream routes that point to the subjected prefixes.</p>
-- <p>This project will use Python w/Netmiko to migrate configuration between F5 clusters and update upstream routing.</p>
+- <p>This project is designed to automate the process of moving L3 gateways between disparate F5s, including the upstream routes that point to the subjected prefixes.</p>
+- <p>This project will use Python w/Netmiko to migrate configuration between F5 clusters and update routing.</p>
 
 ## :dart: Languages
 - Python3, YAML
