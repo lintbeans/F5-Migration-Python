@@ -1,0 +1,94 @@
+---
+
+flags:
+- pools: "ja"
+  vsvr: "ja"
+  
+sips:
+
+#SIPs to delete
+
+- name: SIP-vlan50-VIP
+  address: 192.168.50.1
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-LEGACY
+  fw: legfwvip
+  tg: traffic-group-1
+
+- name: SIP-vlan50-fw1
+  address: 192.168.50.2
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-LEGACY
+  fw: legfw1
+  tg: traffic-group-local-only
+
+- name: SIP-vlan50-fw2
+  address: 192.168.50.3
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-LEGACY
+  fw: legfw2
+  tg: traffic-group-local-only
+
+#SIPs to create
+
+- name: SIP-vlan50-fw1-New
+  address: 192.168.50.2
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-DEV
+  fw: newfw1
+  tg: traffic-group-local-only
+
+- name: SIP-vlan50-fw2-New
+  address: 192.168.50.3
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-DEV
+  fw: newfw2
+  tg: traffic-group-local-only
+
+- name: SIP-vlan50-VIP-New
+  address: 192.168.50.1
+  netmask: 255.255.255.0
+  vlan: vlan50
+  partition: P-DEV
+  fw: newfwvip
+  tg: traffic-group-1
+
+#Route variables
+
+routes:
+- ips: 192.168.50.0
+  mask: 255.255.255.0
+  vrf: P-DEV
+  nh: 10.1.1.1
+  name: Test-VLAN
+
+#F5 variables
+
+devices:
+- legipfw1: 192.168.186.155
+  legipfw2: 192.168.186.156
+  newipfw1: 192.168.186.133
+  newipfw2: 192.168.186.134
+  router1: 192.168.186.157
+  router2: 192.168.186.158
+  
+vs:
+- vsdel: 'delete ltm virtual vs-test-1'
+  vsadd: "create ltm virtual vs-test-1 destination 100.64.150.1:514 ip-protocol tcp mask 255.255.255.255 profiles add {fastL4} rules {iRule1 iRule2} source 0.0.0.0/0"
+  vsname: 'vs-test-1'
+- vsdel: 'delete ltm virtual vs-test-2'
+  vsadd: "create ltm virtual vs-test-2 destination 100.64.150.2:514 ip-protocol tcp mask 255.255.255.255 profiles add {fastL4} rules {iRule1 iRule2} source 0.0.0.0/0"
+  vsname: 'vs-test-2'
+
+pools:
+- pooldel: 'delete ltm pool pool-vs-test1'
+  pooladd: 'create ltm pool pool-vs-test1 members add {VM1:514 {address 192.168.50.4} VM2:514{address 192.168.50.5}}'
+  poolname: 'pool-vs-test1'
+- pooldel: 'delete ltm pool pool-vs-test2'
+  pooladd: 'create ltm pool pool-vs-test2 members add {VM3:514 {address 192.168.50.6} VM4:514{address 192.168.50.7}}'
+  poolname: 'pool-vs-test2'
